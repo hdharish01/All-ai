@@ -1,10 +1,12 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+import { ChatBox } from "@/components/ChatBox";
+import { SmallTopbar } from "@/components/SmallTopbar";
+import { UserAvatar } from "@/components/UserAvatar";
 
 export default function Chat(){
-    return <div>
-        Hello this is All-ai chat which has all the chats
-        <Button onClick={() => {signOut()}}>Signout</Button>
+    return <div className="bg-gradient-to-tr from-zinc-900 to-blue-800 min-h-screen">
+        <div>
+            <SmallTopbar userAvatar={<UserAvatar />}></SmallTopbar>
+            <ChatBox></ChatBox>
+        </div>
     </div>
 }
