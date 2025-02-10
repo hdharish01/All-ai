@@ -3,6 +3,7 @@
 import { mistral } from "@/app/actions/mistral";
 import { modelUsedType } from "./ChatWindow";
 import { Button } from "./ui/button";
+import { gemini } from "@/app/actions/gemini";
 
 type chatBoxProps = {
     textInput: string,
@@ -17,7 +18,7 @@ export function ChatBox({textInput, modelUsed, setTextInput, setModelUsed, setTe
 
     const handleSend = async () => {
         if(textInput.trim() === "") return;
-        const response = await mistral(textInput);
+        const response = await gemini(textInput);
         if(response){setTextOutput(response)}
     }
 
