@@ -5,7 +5,7 @@ import { ChatBox } from "./ChatBox";
 import { ChatOutputCard } from "./ChatOutputCard";
 import { ChatInputCard } from "./ChatInputCard";
 
-export type modelUsedType = "mistral" | "claude" | "deepseek" | "llama"
+export type modelUsedType = "mistral" | "gemini" | "deepseek" | "llama"
 
 export function ChatWindow(){
     const [textInput, setTextInput] = useState("")
@@ -16,8 +16,8 @@ export function ChatWindow(){
     
     return <div>
         <div className="flex-grow overflow-y-auto pb-36">
-            <ChatInputCard inputText={textInput}></ChatInputCard>
-            <ChatOutputCard outputText={textOutput}></ChatOutputCard>
+            {textInput !== "" && <ChatInputCard inputText={textInput}></ChatInputCard>}
+            {textOutput !== "" && <ChatOutputCard outputText={textOutput}></ChatOutputCard>}
         </div>
         
         <ChatBox textInput={textInput} modelUsed={modelUsed} textOutput={textOutput} setTextInput={setTextInput} setModelUsed={setModelUsed} setTextOutput={setTextOutput}></ChatBox>

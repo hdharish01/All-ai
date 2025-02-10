@@ -4,6 +4,8 @@ import { mistral } from "@/app/actions/mistral";
 import { modelUsedType } from "./ChatWindow";
 import { Button } from "./ui/button";
 import { gemini } from "@/app/actions/gemini";
+import { togetherai } from "@/app/actions/togetherai";
+import { togetherllama } from "@/app/actions/togetherllama";
 
 type chatBoxProps = {
     textInput: string,
@@ -18,8 +20,22 @@ export function ChatBox({textInput, modelUsed, setTextInput, setModelUsed, setTe
 
     const handleSend = async () => {
         if(textInput.trim() === "") return;
-        const response = await gemini(textInput);
-        if(response){setTextOutput(response)}
+        if(modelUsed === "gemini"){
+            const response = await gemini(textInput)
+            if(response){setTextOutput(response)}
+        }
+        if(modelUsed === "mistral"){
+            const response = await mistral(textInput)
+            if(response){setTextOutput(response)}
+        }
+        if(modelUsed === "deepseek"){
+            const response = await togetherai(textInput)
+            if(response){setTextOutput(response)}
+        }
+        if(modelUsed === "llama"){
+            const response = await togetherllama(textInput)
+            if(response){setTextOutput(response)}
+        }
     }
 
 
@@ -34,7 +50,7 @@ export function ChatBox({textInput, modelUsed, setTextInput, setModelUsed, setTe
                 <div className="flex flex-col justify-center sm:ml-2">
                     <select className="bg-emerald-900 rounded-full text-white p-2 w-full sm:w-auto hover:bg-emerald-950 focus:bg-emerald-950" value={modelUsed} onChange={(e)=>setModelUsed(e.target.value as modelUsedType)}>
                         <option value={"mistral"}>Mistral</option>
-                        <option value={"claude"}>Claude</option>
+                        <option value={"gemini"}>Gemini</option>
                         <option value={"deepseek"}>Deepseek</option>
                         <option value={"llama"}>Llama</option>
                     </select>
