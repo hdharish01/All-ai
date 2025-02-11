@@ -1,15 +1,16 @@
 "use server"
 
+import { Message } from '@/components/ChatWindow';
 import { Mistral } from '@mistralai/mistralai';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const client = new Mistral({apiKey: apiKey});
 
-export async function mistral(input:string):Promise<string>{
+export async function mistral(messages:Message[]):Promise<string>{
     try{
         const chatResponse = await client.chat.complete({
             model: 'mistral-small-latest',
-            messages: [{role: 'user', content: input}],
+            messages: messages,
         });
         if(chatResponse.choices && chatResponse.choices.length > 0){
             const output = chatResponse.choices[0].message.content
