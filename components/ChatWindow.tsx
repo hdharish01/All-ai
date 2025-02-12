@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChatBox } from "./ChatBox";
 import { ChatOutputCard } from "./ChatOutputCard";
 import { ChatInputCard } from "./ChatInputCard";
+import { motion } from "framer-motion";
 
 export type modelUsedType = "mistral" | "gemini" | "deepseek" | "llama"
 
@@ -19,6 +20,11 @@ export type geminiMessage = {
     }[];
 }
 
+const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
 export function ChatWindow(){    
     const [textInput, setTextInput] = useState("")
     const [textOutput, setTextOutput] = useState("")
@@ -31,17 +37,26 @@ export function ChatWindow(){
         <div className="flex-grow overflow-y-auto pb-36">
             {messages.map((msg,index)=>
                 msg.role === "user" ? (
-                    <ChatInputCard key={`msg-${index}`} inputText={msg.content}></ChatInputCard>
+                    <motion.div key={`msg-${index}`} initial="hidden" animate="visible" variants={fadeIn}>
+                        <ChatInputCard inputText={msg.content}></ChatInputCard>
+                    </motion.div>
                 ):(
-                    <ChatOutputCard key={`msg-${index}`} outputText={msg.content}></ChatOutputCard>
+                    <motion.div key={`msg-${index}`} initial="hidden" animate="visible" variants={fadeIn}>
+                        <ChatOutputCard outputText={msg.content}></ChatOutputCard>
+                    </motion.div>
                 )
             )}
 
             {geminiMessages.map((msg,index) => 
                 msg.role === "user" ? (
-                    <ChatInputCard key={`msg-${index}`} inputText={msg.parts.map(p => p.text).join(" ")}></ChatInputCard>
+                    <motion.div key={`gemini-${index}`} initial="hidden" animate="visible" variants={fadeIn}>
+                        <ChatInputCard inputText={msg.parts.map(p => p.text).join(" ")}></ChatInputCard>
+                    </motion.div>
+                    
                 ):(
-                    <ChatOutputCard key={`msg-${index}`} outputText={msg.parts.map(p => p.text).join(" ")}></ChatOutputCard>
+                    <motion.div key={`gemini-${index}`} initial="hidden" animate="visible" variants={fadeIn}>
+                        <ChatOutputCard outputText={msg.parts.map(p => p.text).join(" ")}></ChatOutputCard>
+                    </motion.div>
                 )
             )}
         </div>
