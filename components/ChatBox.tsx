@@ -21,7 +21,7 @@ type chatBoxProps = {
     setGeminiMessages: React.Dispatch<React.SetStateAction<geminiMessage[]>>,
 }
 
-export function ChatBox({textInput, modelUsed, messages,geminiMessages ,setGeminiMessages , setMessages, setTextInput, setModelUsed, setTextOutput}:chatBoxProps){
+export function ChatBox({textInput, modelUsed, messages,geminiMessages ,setGeminiMessages , setMessages, setTextInput, setModelUsed}:chatBoxProps){
 
     const handleSend = async () => {
         if(textInput.trim() === "") return;
