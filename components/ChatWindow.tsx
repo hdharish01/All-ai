@@ -29,8 +29,21 @@ export function ChatWindow(){
     
     return <div>
         <div className="flex-grow overflow-y-auto pb-36">
-            {textInput !== "" && <ChatInputCard inputText={textInput}></ChatInputCard>}
-            {textOutput !== "" && <ChatOutputCard outputText={textOutput}></ChatOutputCard>}
+            {messages.map((msg,index)=>
+                msg.role === "user" ? (
+                    <ChatInputCard key={`msg-${index}`} inputText={msg.content}></ChatInputCard>
+                ):(
+                    <ChatOutputCard key={`msg-${index}`} outputText={msg.content}></ChatOutputCard>
+                )
+            )}
+
+            {geminiMessages.map((msg,index) => 
+                msg.role === "user" ? (
+                    <ChatInputCard key={`msg-${index}`} inputText={msg.parts.map(p => p.text).join(" ")}></ChatInputCard>
+                ):(
+                    <ChatOutputCard key={`msg-${index}`} outputText={msg.parts.map(p => p.text).join(" ")}></ChatOutputCard>
+                )
+            )}
         </div>
         
         <ChatBox geminiMessages={geminiMessages} setGeminiMessages={setGeminiMessages} messages={messages} setMessages={setMessages} textInput={textInput} modelUsed={modelUsed} textOutput={textOutput} setTextInput={setTextInput} setModelUsed={setModelUsed} setTextOutput={setTextOutput}></ChatBox>

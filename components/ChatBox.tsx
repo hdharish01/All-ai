@@ -7,6 +7,7 @@ import { gemini } from "@/app/actions/gemini";
 import { togetherai } from "@/app/actions/togetherai";
 import { togetherllama } from "@/app/actions/togetherllama";
 
+
 type chatBoxProps = {
     textInput: string,
     modelUsed: modelUsedType,
@@ -16,8 +17,8 @@ type chatBoxProps = {
     setTextInput: (value:string) => void,
     setModelUsed: (value:modelUsedType) => void,
     setTextOutput: (value:string) => void,
-    setMessages: (value:Message[]) => void,
-    setGeminiMessages: (value:geminiMessage[]) => void,
+    setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
+    setGeminiMessages: React.Dispatch<React.SetStateAction<geminiMessage[]>>,
 }
 
 export function ChatBox({textInput, modelUsed, messages,geminiMessages ,setGeminiMessages , setMessages, setTextInput, setModelUsed, setTextOutput}:chatBoxProps){
@@ -25,47 +26,50 @@ export function ChatBox({textInput, modelUsed, messages,geminiMessages ,setGemin
     const handleSend = async () => {
         if(textInput.trim() === "") return;
 
+        const newMessage:Message = {role:"user",content:textInput}
+        const newGeminiMessage:geminiMessage = {role:"user",parts:[{text:textInput}]}
+        if(modelUsed !== "gemini") { setMessages([...messages,newMessage]) }
+        if(modelUsed === "gemini") { setGeminiMessages([...geminiMessages,newGeminiMessage]) }
+        
+        setTextInput("")
+
         if(modelUsed === "gemini"){
-            const response = await gemini(geminiMessages)
+            const response = await gemini([...geminiMessages,newGeminiMessage])
             if(response){
-                setTextOutput(response)
-                setGeminiMessages([...geminiMessages,{
-                    role:"model",
-                    parts:[{text:response}]
-                }])
+                setGeminiMessages((prev:geminiMessage[]) => [
+                    ...prev,
+                    {role:"model",parts:[{text:response}]} as geminiMessage
+                ])
             }
         }
 
         if(modelUsed === "mistral"){
-            const response = await mistral(messages)
+            const response = await mistral([...messages,newMessage])
             if(response){
-                setTextOutput(response)
-                setMessages([...messages,{
-                    role:"assistant",
-                    content:response
-                }])
+                setMessages((prev:Message[]) => [
+                    ...prev,
+                    {role:"assistant",content:response} as Message
+                ])
             }
         }
 
         if(modelUsed === "deepseek"){
-            const response = await togetherai(messages)
+            const response = await togetherai([...messages,newMessage])
             if(response){
-                setTextOutput(response)
-                setMessages([...messages,{
-                    role:"assistant",
-                    content:response
-                }])
+                setMessages((prev:Message[]) => [
+                    ...prev,
+                    {role:"assistant",content:response} as Message
+                ])
             }
         }
 
         if(modelUsed === "llama"){
-            const response = await togetherllama(messages)
+            const response = await togetherllama([...messages,newMessage])
             if(response){
-                setTextOutput(response)
-                setMessages([...messages,{
-                    role:"assistant",
-                    content:response
-                }])
+                setMessages((prev:Message[]) => [
+                    ...prev,
+                    {role:"assistant",content:response} as Message
+                ])
             }
         }
     }
@@ -78,14 +82,6 @@ export function ChatBox({textInput, modelUsed, messages,geminiMessages ,setGemin
                 <div className="border-2 rounded-full flex justify-between p-4 bg-gradient-to-r from-blue-950/95 to-blue-900/95 w-full">
                     <input type="text" placeholder="Chat here" className="bg-transparent focus:outline-none text-white w-full" value={textInput} onKeyDown={(e)=>{if(e.key === "Enter") handleSend()}} onChange={(e)=>{
                             setTextInput(e.target.value)
-                            setMessages([...messages,{
-                                role:"user",
-                                content:e.target.value
-                            }])
-                            setGeminiMessages([...geminiMessages,{
-                                role:"user",
-                                parts:[{text:e.target.value}]
-                            }])
                         }}/>
                     <Button className="rounded-full text-xl shrink-0" onClick={handleSend}>⮝</Button>
                 </div>
