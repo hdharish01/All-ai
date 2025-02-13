@@ -10,7 +10,7 @@ export function Topbar(){
         </div>
         <div className="flex flex-col justify-center mr-4">
             <Button className="rounded-2xl" variant={"login"} onClick={() => {
-                signIn("google", {callbackUrl:"/chat"})
+                signIn("google", {redirectTo:"/chat"})
             }}>Sign in</Button>
         </div>
     </div>
